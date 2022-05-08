@@ -1,7 +1,7 @@
 package ru.neoslax.factorialcalc
 
-class State(
-    val isError: Boolean = false,
-    val isInProgress: Boolean = false,
-    val factorial: String = ""
-)
+sealed class State {
+    object Error : State()
+    object Progress : State()
+    class Result(val result: String) : State()
+}

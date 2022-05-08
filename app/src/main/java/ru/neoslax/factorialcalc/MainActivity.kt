@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import ru.neoslax.factorialcalc.databinding.ActivityMainBinding
+import java.lang.Error
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,17 +29,20 @@ class MainActivity : AppCompatActivity() {
 
     private fun observeViewModel() {
         viewModel.state.observe(this) { state ->
-            if (state.isError) {
-                Toast.makeText(this, "You did not entered number", Toast.LENGTH_SHORT).show()
+            binding.btnCalculate.isEnabled = true
+            binding.progressBar.visibility = View.GONE
+            when (state) {
+                is State.Error -> {
+                    Toast.makeText(this, "You did not entered number", Toast.LENGTH_SHORT).show()
+                }
+                is State.Progress -> {
+                    binding.btnCalculate.isEnabled = false
+                    binding.progressBar.visibility = View.VISIBLE
+                }
+                is State.Result -> {
+                    binding.tvResult.text = state.result
+                }
             }
-            if (state.isInProgress) {
-                binding.btnCalculate.isEnabled = false
-                binding.progressBar.visibility = View.VISIBLE
-            } else {
-                binding.btnCalculate.isEnabled = true
-                binding.progressBar.visibility = View.GONE
-            }
-            binding.tvResult.text = state.factorial
         }
     }
 }
